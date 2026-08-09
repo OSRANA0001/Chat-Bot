@@ -1,0 +1,368 @@
+/* ============================================================
+   COLOR TOKENS
+   Base palette from Color Hunt (colorhunt.co/palette/f7f1deb0ba999d66384e220f)
+   - a cream/olive/terracotta/espresso food palette.
+   Sauce red was added separately as the one accent color, since
+   a pizzeria without any tomato red felt incomplete.
+   ============================================================ */
+:root {
+  --parchment: #f7f1de;   /* page background - butcher paper */
+  --mozzarella: #fffdf6;  /* card / ticket surfaces */
+  --basil: #7c8a5e;       /* bot accent - fresh basil green */
+  --basil-dark: #566143;
+  --crust: #9d6638;       /* borders, dividers, wood-fired crust */
+  --crust-light: #d8c3a5;
+  --espresso: #3a1d0f;    /* headings, primary text - deep roast */
+  --sauce: #b3402c;       /* the one bold accent - tomato sauce red */
+  --sauce-dark: #8f2e1e;
+
+  --font-display: "DM Serif Display", Georgia, serif;
+  --font-body: "Karla", system-ui, sans-serif;
+  --font-mono: "Space Mono", "Courier New", monospace;
+
+  --radius: 14px;
+  --shadow-ticket: 0 2px 0 rgba(58, 29, 15, 0.06), 0 8px 20px rgba(58, 29, 15, 0.08);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body, #root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  color: var(--espresso);
+  font-family: var(--font-body);
+  background-color: var(--parchment);
+  /* faint dot-grain so the paper doesn't look flat */
+  background-image: radial-gradient(rgba(58, 29, 15, 0.06) 1px, transparent 1px);
+  background-size: 18px 18px;
+}
+
+button {
+  font-family: inherit;
+}
+
+/* ============================================================
+   LAYOUT
+   ============================================================ */
+.app-shell {
+  max-width: 720px;
+  margin: 0 auto;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  padding: 20px 16px 0;
+}
+
+/* ---- Chalkboard header, like a sign hanging over the counter ---- */
+.header {
+  position: relative;
+  background: var(--espresso);
+  border-radius: 10px;
+  padding: 22px 24px 20px;
+  margin-bottom: 18px;
+  box-shadow: var(--shadow-ticket);
+}
+
+.header::before,
+.header::after {
+  content: "";
+  position: absolute;
+  top: 10px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(247, 241, 222, 0.35);
+}
+.header::before { left: 14px; }
+.header::after { right: 14px; }
+
+.header h1 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-weight: 400;
+  color: var(--parchment);
+  text-shadow: 0 0 14px rgba(247, 241, 222, 0.25);
+  letter-spacing: 0.01em;
+}
+
+.header p {
+  margin: 6px 0 0;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--crust-light);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+/* ============================================================
+   CHAT AREA
+   ============================================================ */
+.chat-scroll {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 6px 4px 24px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--crust-light) transparent;
+}
+
+.chat-scroll::-webkit-scrollbar {
+  width: 8px;
+}
+.chat-scroll::-webkit-scrollbar-thumb {
+  background: var(--crust-light);
+  border-radius: 8px;
+}
+
+/* ---- Empty state ---- */
+.empty-state {
+  margin: auto 0;
+  text-align: center;
+  padding: 24px 12px;
+}
+
+.empty-state .slice {
+  font-size: 2.4rem;
+  display: inline-block;
+  margin-bottom: 6px;
+}
+
+.empty-state h2 {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 1.5rem;
+  margin: 0 0 6px;
+  color: var(--espresso);
+}
+
+.empty-state p {
+  margin: 0 0 18px;
+  color: var(--crust);
+  font-size: 0.95rem;
+}
+
+.chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+}
+
+.chip {
+  border: 1.5px solid var(--crust);
+  background: var(--mozzarella);
+  color: var(--espresso);
+  border-radius: 999px;
+  padding: 8px 14px;
+  font-size: 0.85rem;
+  font-family: var(--font-body);
+  cursor: pointer;
+  transition: transform 0.15s ease, background 0.15s ease;
+}
+.chip:hover {
+  background: var(--crust-light);
+  transform: translateY(-1px);
+}
+
+/* ---- Message row + tickets ---- */
+.message-row {
+  display: flex;
+  animation: rise 0.25s ease;
+}
+.message-row.user { justify-content: flex-end; }
+.message-row.bot { justify-content: flex-start; }
+
+@keyframes rise {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.ticket {
+  max-width: 82%;
+  background: var(--mozzarella);
+  border-radius: var(--radius);
+  padding: 12px 16px 14px;
+  box-shadow: var(--shadow-ticket);
+  border: 1px solid var(--crust-light);
+}
+
+.ticket .eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  display: block;
+  margin-bottom: 5px;
+}
+
+.ticket .body-text {
+  margin: 0;
+  line-height: 1.5;
+  white-space: pre-wrap;
+}
+
+.ticket.bot {
+  border-left: 4px solid var(--basil);
+  border-top-left-radius: 4px;
+}
+.ticket.bot .eyebrow { color: var(--basil-dark); }
+.ticket.bot .body-text {
+  font-family: var(--font-display);
+  font-size: 1.08rem;
+  color: var(--espresso);
+}
+
+.ticket.user {
+  border-right: 4px solid var(--sauce);
+  border-top-right-radius: 4px;
+  background: #fffaf0;
+}
+.ticket.user .eyebrow { color: var(--sauce-dark); text-align: right; }
+.ticket.user .body-text {
+  font-family: var(--font-mono);
+  font-size: 0.92rem;
+  color: var(--espresso);
+  text-align: right;
+}
+
+.ticket.error {
+  border-left: 4px solid var(--sauce);
+}
+.ticket.error .eyebrow { color: var(--sauce-dark); }
+
+/* ---- Typing indicator ---- */
+.typing-dots {
+  display: inline-flex;
+  gap: 4px;
+  align-items: center;
+  padding: 2px 0;
+}
+.typing-dots span {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--basil);
+  animation: bounce 1.1s infinite ease-in-out;
+}
+.typing-dots span:nth-child(2) { animation-delay: 0.15s; }
+.typing-dots span:nth-child(3) { animation-delay: 0.3s; }
+
+@keyframes bounce {
+  0%, 60%, 100% { transform: translateY(0); opacity: 0.5; }
+  30% { transform: translateY(-4px); opacity: 1; }
+}
+
+/* ============================================================
+   INPUT BAR - sits below a torn perforation line, like tearing
+   a slip off a receipt roll.
+   ============================================================ */
+.input-dock {
+  position: sticky;
+  bottom: 0;
+  background: var(--parchment);
+  padding-top: 10px;
+  padding-bottom: 18px;
+}
+
+.perforation {
+  height: 3px;
+  margin-bottom: 12px;
+  background-image: radial-gradient(circle, var(--crust) 1.4px, transparent 1.4px);
+  background-size: 10px 3px;
+  background-repeat: repeat-x;
+  opacity: 0.6;
+}
+
+.input-row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.input-row input {
+  flex: 1;
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  padding: 13px 16px;
+  border-radius: 999px;
+  border: 1.5px solid var(--crust);
+  background: var(--mozzarella);
+  color: var(--espresso);
+  outline: none;
+  transition: box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+.input-row input::placeholder {
+  color: #b7a996;
+}
+
+.input-row input:focus-visible {
+  border-color: var(--sauce);
+  box-shadow: 0 0 0 3px rgba(179, 64, 44, 0.18);
+}
+
+.input-row input:disabled {
+  opacity: 0.6;
+}
+
+.send-btn {
+  flex-shrink: 0;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  border: none;
+  background: var(--sauce);
+  color: var(--mozzarella);
+  font-size: 1.15rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.12s ease, background 0.15s ease;
+}
+
+.send-btn:hover:not(:disabled) {
+  background: var(--sauce-dark);
+}
+
+.send-btn:active:not(:disabled) {
+  transform: scale(0.92);
+}
+
+.send-btn:disabled {
+  background: var(--crust-light);
+  cursor: not-allowed;
+}
+
+.send-btn:focus-visible {
+  outline: 2px solid var(--espresso);
+  outline-offset: 2px;
+}
+
+/* ============================================================
+   RESPONSIVE + ACCESSIBILITY
+   ============================================================ */
+@media (max-width: 480px) {
+  .app-shell { padding: 14px 10px 0; }
+  .header h1 { font-size: 1.6rem; }
+  .ticket { max-width: 90%; }
+  .ticket.bot .body-text { font-size: 1rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .message-row,
+  .typing-dots span,
+  .chip,
+  .send-btn {
+    animation: none !important;
+    transition: none !important;
+  }
+}
